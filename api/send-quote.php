@@ -61,13 +61,13 @@ function enforceRateLimit(int $limit = 10, int $windowSeconds = 900): void {
 enforceRateLimit();
 
 // CAPTCHA visual: uso único, válido entre 2 segundos e 30 minutos.
-$captchaAnswer = strtoupper(preg_replace('/[^A-Z0-9]/', '', (string)($_POST['captcha_answer'] ?? '')));
+$captchaAnswer = preg_replace('/[^0-9]/', '', (string)($_POST['captcha_answer'] ?? ''));
 $captchaHash = (string)($_SESSION['quote_captcha_hash'] ?? '');
 $captchaIssuedAt = (int)($_SESSION['quote_captcha_issued_at'] ?? 0);
 unset($_SESSION['quote_captcha_hash'], $_SESSION['quote_captcha_issued_at']);
 
 $captchaAge = time() - $captchaIssuedAt;
-if ($captchaHash === '' || $captchaAnswer === '' || $captchaAge < 2 || $captchaAge > 1800 || !password_verify($captchaAnswer, $captchaHash)) {
+if ($captchaHash === '' || strlen($captchaAnswer) !== 4 || $captchaAge < 0 || $captchaAge > 1800 || !hash_equals($captchaHash, hash('sha256', $captchaAnswer))) {
     finish(422, false, 'Código de segurança inválido. Atualize a imagem e tente novamente.');
 }
 
