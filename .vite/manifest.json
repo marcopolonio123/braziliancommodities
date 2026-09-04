@@ -11,7 +11,7 @@
     "name": "rolldown-runtime"
   },
   "app/page.tsx": {
-    "file": "assets/page-FORM-v49.js",
+    "file": "assets/page-FORM-v51.js",
     "name": "page",
     "src": "app/page.tsx",
     "isDynamicEntry": true,
