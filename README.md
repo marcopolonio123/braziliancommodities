@@ -4,12 +4,12 @@ Site institucional da Brazilian Commodities, com portfólio, processo comercial,
 
 ## Publicação na Hostinger
 
-1. Envie o conteúdo do repositório para a raiz `public_html`.
-2. Copie `private/mail-config.example.php` para `private/mail-config.php`.
-3. Preencha a senha SMTP somente no servidor.
-4. Não envie `private/mail-config.php` ao GitHub.
+1. Publique o conteúdo do repositório na raiz `public_html`.
+2. No mesmo diretório de `public_html`, crie a pasta persistente `private`.
+3. Copie `public_html/private/mail-config.example.php` para `private/mail-config.php` (fora de `public_html`).
+4. Preencha a senha SMTP somente no servidor e nunca envie esse arquivo ao GitHub.
 
-O contador cria automaticamente o arquivo `private/visitor-count.txt` na primeira visita.
+O contador usa `private/visitor-count.txt` fora de `public_html`, preservando o total entre deployments. Durante a migração, se a pasta persistente ainda não existir, o código usa temporariamente `public_html/private`.
 
 ## Segurança do formulário
 
