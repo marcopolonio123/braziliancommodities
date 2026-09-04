@@ -1,0 +1,26 @@
+BRAZILIAN COMMODITIES - VERSAO 45 COMPLETA - RILS E CAPTCHA DE SEGURANCA
+
+Extraia este ZIP diretamente dentro de public_html.
+O index.html deve ficar em public_html/index.html, sem pasta intermediaria.
+
+ANTES DE PUBLICAR:
+1. Abra private/mail-config.php.
+2. Substitua SENHA_DO_EMAIL pela senha de contact@braziliancommodities.com.
+3. Extraia todo o ZIP na raiz de public_html.
+4. Confirme a substituicao dos arquivos existentes.
+5. Abra o site e pressione Ctrl + F5.
+
+CONFERIDO NESTA VERSAO:
+- Graos e derivados.
+- Farinhas e Farelos.
+- Carnes, aves e embutidos, com pes de frango na imagem.
+- Leite e derivados.
+- Oleos com o mesmo tamanho dos demais cards.
+- Board atualizado do processo de importacao/exportacao.
+- LOI, SCO/FCO, ICPO, contrato, compliance, embarque e entrega.
+- SIF, GACC, SGC e certificados aplicaveis.
+- Formulario completo com anexos e envio SMTP.
+- Portugues, ingles, espanhol e chines.
+- Parceiros, WhatsApp, e-mail e contador de visitas.
+- Novo parceiro RILS Comercio e Distribuicao Ltda. com logo oficial.
+- CAPTCHA visual com imagem, bloqueio de robos e limite de tentativas por IP.
