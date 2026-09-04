@@ -149,6 +149,9 @@ $headers = [
     'Reply-To: '.$contactName.' <'.$email.'>',
     'Content-Type: multipart/mixed; boundary="'.$boundary.'"',
 ];
+if (strcasecmp((string)$email, $to) !== 0) {
+    $headers[] = 'Cc: '.$email;
+}
 
 $body = '--'.$boundary."\r\n";
 $body .= "Content-Type: text/html; charset=UTF-8\r\n";
@@ -238,6 +241,9 @@ try {
     smtpCommand($socket, base64_encode((string)$smtp['password']), [235]);
     smtpCommand($socket, 'MAIL FROM:<'.$smtp['username'].'>', [250]);
     smtpCommand($socket, 'RCPT TO:<'.$to.'>', [250, 251]);
+    if (strcasecmp((string)$email, $to) !== 0) {
+        smtpCommand($socket, 'RCPT TO:<'.$email.'>', [250, 251]);
+    }
     smtpCommand($socket, 'DATA', [354]);
     $messageHeaders = array_merge([
         'Date: '.date(DATE_RFC2822),
