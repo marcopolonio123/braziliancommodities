@@ -90,6 +90,11 @@ if (!$contactName || !$email || !$phone || !$companyName || !$companyCountry || 
     finish(422, false, 'Preencha todos os campos obrigatórios.');
 }
 
+$phoneDigits = preg_replace('/\D/', '', $phone);
+if (strncmp($phone, '+', 1) !== 0 || strlen($phoneDigits) < 8 || strlen($phoneDigits) > 15) {
+    finish(422, false, 'Informe o telefone com DDI, começando pelo sinal de +. Exemplo: +55 11 99999-9999.');
+}
+
 if (strlen($productsJson) > 50000 || count($products) > 20) {
     finish(422, false, 'A solicitação excede o limite permitido.');
 }
