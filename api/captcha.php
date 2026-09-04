@@ -20,14 +20,14 @@ if (!function_exists('imagecreatetruecolor')) {
     exit;
 }
 
-$alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 $code = '';
-for ($i = 0; $i < 6; $i++) {
-    $code .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+for ($i = 0; $i < 4; $i++) {
+    $code .= (string)random_int(0, 9);
 }
 
-$_SESSION['quote_captcha_hash'] = password_hash($code, PASSWORD_DEFAULT);
+$_SESSION['quote_captcha_hash'] = hash('sha256', $code);
 $_SESSION['quote_captcha_issued_at'] = time();
+session_write_close();
 
 $width = 230;
 $height = 78;
@@ -61,11 +61,11 @@ for ($i = 0; $i < 350; $i++) {
 }
 
 $colors = [$navy, $green, $blue];
-for ($i = 0; $i < 6; $i++) {
+for ($i = 0; $i < 4; $i++) {
     imagestring(
         $image,
         5,
-        25 + ($i * 32) + random_int(-3, 3),
+        50 + ($i * 34) + random_int(-3, 3),
         27 + random_int(-9, 9),
         $code[$i],
         $colors[random_int(0, count($colors) - 1)]
