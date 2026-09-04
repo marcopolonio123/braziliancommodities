@@ -7,8 +7,10 @@ header('X-Content-Type-Options: nosniff');
 
 $persistentDir = dirname(__DIR__, 2).'/private';
 $legacyDir = dirname(__DIR__).'/private';
-$storageDir = is_dir($persistentDir) ? $persistentDir : $legacyDir;
-$storageFile = $storageDir.'/visitor-count.txt';
+$persistentFile = $persistentDir.'/visitor-count.txt';
+$legacyFile = $legacyDir.'/visitor-count.txt';
+$storageFile = is_file($persistentFile) || !is_file($legacyFile) ? $persistentFile : $legacyFile;
+$storageDir = dirname($storageFile);
 if (!is_dir($storageDir) && !mkdir($storageDir, 0750, true)) {
     http_response_code(500);
     echo json_encode(['ok' => false]);
