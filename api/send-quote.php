@@ -125,7 +125,7 @@ $html = '<!doctype html><html><body style="font-family:Arial,sans-serif;color:#2
 $html .= '<h2 style="color:#0b3a57">Nova solicitação de cotação — Brazilian Commodities</h2>';
 $html .= '<table cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:760px">';
 foreach ($rows as [$label, $value]) {
-    $html .= '<tr><td style="border:1px solid #d8e3dd;background:#f1f7f3;font-weight:bold;width:230px">'.$escape($label).'</td><td style="border:1px solid #d8e3dd">'.nl2br($escape((string)$value)).'</td></tr>';
+    $html .= '<tr><td style="border:1px solid #d8e3dd;background:#f1f7f3;font-weight:700;width:230px"><strong style="font-weight:700">'.$escape($label).'</strong></td><td style="border:1px solid #d8e3dd">'.nl2br($escape((string)$value)).'</td></tr>';
 }
 $html .= '</table><h3 style="color:#197753;margin-top:26px">Produtos / commodities</h3>';
 
