@@ -40,6 +40,15 @@
     return 'pt';
   }
 
+  const originalFetch = window.fetch.bind(window);
+  window.fetch = (input, init = {}) => {
+    const url = typeof input === 'string' ? input : input?.url || '';
+    if (url.includes('/api/send-quote.php') && init.body instanceof FormData) {
+      init.body.set('language', currentLanguage());
+    }
+    return originalFetch(input, init);
+  };
+
   function syncPhone(copy) {
     const input = document.querySelector('#quote input[type="tel"]');
     if (!input) return;
