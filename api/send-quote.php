@@ -189,7 +189,9 @@ if ($attachments && is_array($attachments['name'] ?? null)) {
 }
 $body .= '--'.$boundary."--\r\n";
 
-$configPath = dirname(__DIR__).'/private/mail-config.php';
+$persistentConfigPath = dirname(__DIR__, 2).'/private/mail-config.php';
+$legacyConfigPath = dirname(__DIR__).'/private/mail-config.php';
+$configPath = is_file($persistentConfigPath) ? $persistentConfigPath : $legacyConfigPath;
 if (!is_file($configPath)) {
     finish(500, false, 'Configuração SMTP não encontrada.');
 }
