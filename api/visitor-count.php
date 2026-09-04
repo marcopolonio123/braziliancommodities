@@ -5,7 +5,9 @@ header('Content-Type: application/json; charset=UTF-8');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('X-Content-Type-Options: nosniff');
 
-$storageDir = dirname(__DIR__).'/private';
+$persistentDir = dirname(__DIR__, 2).'/private';
+$legacyDir = dirname(__DIR__).'/private';
+$storageDir = is_dir($persistentDir) ? $persistentDir : $legacyDir;
 $storageFile = $storageDir.'/visitor-count.txt';
 if (!is_dir($storageDir) && !mkdir($storageDir, 0750, true)) {
     http_response_code(500);
