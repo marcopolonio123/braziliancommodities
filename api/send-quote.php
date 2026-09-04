@@ -144,8 +144,78 @@ foreach ($products as $index => $product) {
 }
 $html .= '<p style="font-size:12px;color:#687b83">Enviado pelo formulário de braziliancommodities.com.</p></body></html>';
 
+$language = field('language', 2);
+if (!in_array($language, ['pt', 'en', 'es', 'zh'], true)) $language = 'en';
+
+function localizedEmail(string $html, string $language): string {
+    $translations = [
+        'en' => [
+            'Nova solicitação de cotação' => 'New quotation request',
+            'Contato' => 'Contact', 'E-mail' => 'Email', 'Telefone / WhatsApp' => 'Phone / WhatsApp',
+            'Empresa' => 'Company', 'CNPJ / Registro fiscal' => 'Tax ID / Company registration',
+            'País da empresa' => 'Company country', 'Não informado' => 'Not provided',
+            'Perfil' => 'Profile', 'Intermediário / broker / corretor' => 'Intermediary / broker',
+            'Comprador final' => 'End buyer', 'Sou mandatário' => 'Mandate holder',
+            'Contato direto com comprador final' => 'Direct contact with the end buyer',
+            'Não se aplica' => 'Not applicable', 'Tipo de compra' => 'Purchase type',
+            'Origem do produto' => 'Product origin', 'Porto ou país de destino' => 'Destination port or country',
+            'Termo de pagamento' => 'Payment terms', 'Observações gerais' => 'General notes',
+            'Nenhuma' => 'None', 'Produtos / commodities' => 'Products / commodities',
+            'Produto ' => 'Product ', 'Quantidade:' => 'Quantity:', 'Sim' => 'Yes', 'Não' => 'No',
+            'Embalagem:' => 'Packaging:', 'Não informada' => 'Not provided',
+            'Características:' => 'Specifications:', 'Não informadas' => 'Not provided',
+            'Enviado pelo formulário de' => 'Sent through the form at',
+        ],
+        'es' => [
+            'Nova solicitação de cotação' => 'Nueva solicitud de cotización',
+            'Contato' => 'Contacto', 'E-mail' => 'Correo electrónico', 'Telefone / WhatsApp' => 'Teléfono / WhatsApp',
+            'Empresa' => 'Empresa', 'CNPJ / Registro fiscal' => 'Identificación fiscal / Registro empresarial',
+            'País da empresa' => 'País de la empresa', 'Não informado' => 'No informado',
+            'Perfil' => 'Perfil', 'Intermediário / broker / corretor' => 'Intermediario / broker',
+            'Comprador final' => 'Comprador final', 'Sou mandatário' => 'Soy mandatario',
+            'Contato direto com comprador final' => 'Contacto directo con el comprador final',
+            'Não se aplica' => 'No aplica', 'Tipo de compra' => 'Tipo de compra',
+            'Origem do produto' => 'Origen del producto', 'Porto ou país de destino' => 'Puerto o país de destino',
+            'Termo de pagamento' => 'Condiciones de pago', 'Observações gerais' => 'Observaciones generales',
+            'Nenhuma' => 'Ninguna', 'Produtos / commodities' => 'Productos / commodities',
+            'Produto ' => 'Producto ', 'Quantidade:' => 'Cantidad:', 'Sim' => 'Sí', 'Não' => 'No',
+            'Embalagem:' => 'Embalaje:', 'Não informada' => 'No informado',
+            'Características:' => 'Características:', 'Não informadas' => 'No informadas',
+            'Enviado pelo formulário de' => 'Enviado mediante el formulario de',
+        ],
+        'zh' => [
+            'Nova solicitação de cotação' => '新询价申请',
+            'Contato' => '联系人', 'E-mail' => '电子邮箱', 'Telefone / WhatsApp' => '电话 / WhatsApp',
+            'Empresa' => '公司', 'CNPJ / Registro fiscal' => '税号 / 公司注册号',
+            'País da empresa' => '公司所在国家', 'Não informado' => '未提供',
+            'Perfil' => '身份', 'Intermediário / broker / corretor' => '中介 / 经纪人',
+            'Comprador final' => '最终买家', 'Sou mandatário' => '授权代表',
+            'Contato direto com comprador final' => '与最终买家直接联系',
+            'Não se aplica' => '不适用', 'Tipo de compra' => '采购类型',
+            'Origem do produto' => '产品原产地', 'Porto ou país de destino' => '目的港或国家',
+            'Termo de pagamento' => '付款条件', 'Observações gerais' => '一般备注',
+            'Nenhuma' => '无', 'Produtos / commodities' => '产品 / 大宗商品',
+            'Produto ' => '产品 ', 'Quantidade:' => '数量:', 'Sim' => '是', 'Não' => '否',
+            'Embalagem:' => '包装:', 'Não informada' => '未提供',
+            'Características:' => '规格:', 'Não informadas' => '未提供',
+            'Enviado pelo formulário de' => '通过以下网站的表单发送：',
+        ],
+    ];
+    return $language === 'pt' ? $html : strtr($html, $translations[$language] ?? $translations['en']);
+}
+
+$teamHtml = localizedEmail($html, 'en');
+$senderHtml = localizedEmail($html, $language);
+
 $to = 'contact@braziliancommodities.com';
-$subject = 'Nova solicitação de cotação - '.$companyName;
+$teamSubject = 'New quotation request - '.$companyName;
+$senderSubjects = [
+    'pt' => 'Cópia da sua solicitação de cotação - '.$companyName,
+    'en' => 'Copy of your quotation request - '.$companyName,
+    'es' => 'Copia de su solicitud de cotización - '.$companyName,
+    'zh' => '您的询价申请副本 - '.$companyName,
+];
+$senderSubject = $senderSubjects[$language];
 $from = 'contact@braziliancommodities.com';
 $boundary = '=_BrazilianCommodities_'.bin2hex(random_bytes(12));
 $headers = [
@@ -154,13 +224,7 @@ $headers = [
     'Reply-To: '.$contactName.' <'.$email.'>',
     'Content-Type: multipart/mixed; boundary="'.$boundary.'"',
 ];
-if (strcasecmp((string)$email, $to) !== 0) {
-    $headers[] = 'Cc: '.$email;
-}
-
-$body = '--'.$boundary."\r\n";
-$body .= "Content-Type: text/html; charset=UTF-8\r\n";
-$body .= "Content-Transfer-Encoding: 8bit\r\n\r\n".$html."\r\n";
+$attachmentParts = '';
 
 $allowed = [
     'application/pdf' => 'pdf',
@@ -188,14 +252,19 @@ if ($attachments && is_array($attachments['name'] ?? null)) {
         $safeBase = preg_replace('/[^A-Za-z0-9._-]/', '_', basename((string)$originalName));
         $safeName = $safeBase ?: 'anexo.'.$allowed[$mime];
         $content = chunk_split(base64_encode((string)file_get_contents($tmp)));
-        $body .= '--'.$boundary."\r\n";
-        $body .= 'Content-Type: '.$mime.'; name="'.$safeName."\"\r\n";
-        $body .= "Content-Transfer-Encoding: base64\r\n";
-        $body .= 'Content-Disposition: attachment; filename="'.$safeName."\"\r\n\r\n";
-        $body .= $content."\r\n";
+        $attachmentParts .= '--'.$boundary."\r\n";
+        $attachmentParts .= 'Content-Type: '.$mime.'; name="'.$safeName."\"\r\n";
+        $attachmentParts .= "Content-Transfer-Encoding: base64\r\n";
+        $attachmentParts .= 'Content-Disposition: attachment; filename="'.$safeName."\"\r\n\r\n";
+        $attachmentParts .= $content."\r\n";
     }
 }
-$body .= '--'.$boundary."--\r\n";
+function mimeBody(string $html, string $boundary, string $attachmentParts): string {
+    return '--'.$boundary."\r\n"
+        ."Content-Type: text/html; charset=UTF-8\r\n"
+        ."Content-Transfer-Encoding: 8bit\r\n\r\n".$html."\r\n"
+        .$attachmentParts.'--'.$boundary."--\r\n";
+}
 
 $persistentConfigPath = dirname(__DIR__, 2).'/private/mail-config.php';
 $legacyConfigPath = dirname(__DIR__).'/private/mail-config.php';
@@ -225,13 +294,28 @@ function smtpCommand($socket, string $command, array $expected): string {
     return smtpRead($socket, $expected);
 }
 
-$encodedSubject = '=?UTF-8?B?'.base64_encode($subject).'?=';
 $port = (int)($smtp['port'] ?? 465);
 $transport = (($smtp['encryption'] ?? 'ssl') === 'ssl' ? 'ssl://' : 'tcp://').$smtp['host'].':'.$port;
 $context = stream_context_create(['ssl' => ['verify_peer' => true, 'verify_peer_name' => true]]);
 $socket = @stream_socket_client($transport, $errno, $errstr, 20, STREAM_CLIENT_CONNECT, $context);
 if (!$socket) finish(500, false, 'Não foi possível conectar ao servidor de e-mail.');
 stream_set_timeout($socket, 25);
+
+function smtpSendMessage($socket, array $smtp, string $recipient, string $recipientName, string $subject, string $body, array $headers): void {
+    smtpCommand($socket, 'MAIL FROM:<'.$smtp['username'].'>', [250]);
+    smtpCommand($socket, 'RCPT TO:<'.$recipient.'>', [250, 251]);
+    smtpCommand($socket, 'DATA', [354]);
+    $messageHeaders = array_merge([
+        'Date: '.date(DATE_RFC2822),
+        'To: '.$recipientName.' <'.$recipient.'>',
+        'Subject: =?UTF-8?B?'.base64_encode($subject).'?=',
+        'Message-ID: <'.bin2hex(random_bytes(12)).'@braziliancommodities.com>',
+    ], $headers);
+    $message = implode("\r\n", $messageHeaders)."\r\n\r\n".$body;
+    $message = preg_replace('/(?m)^\./', '..', $message);
+    if (fwrite($socket, $message."\r\n.\r\n") === false) throw new RuntimeException('Falha no envio dos dados.');
+    smtpRead($socket, [250]);
+}
 
 try {
     smtpRead($socket, [220]);
@@ -244,22 +328,10 @@ try {
     smtpCommand($socket, 'AUTH LOGIN', [334]);
     smtpCommand($socket, base64_encode((string)$smtp['username']), [334]);
     smtpCommand($socket, base64_encode((string)$smtp['password']), [235]);
-    smtpCommand($socket, 'MAIL FROM:<'.$smtp['username'].'>', [250]);
-    smtpCommand($socket, 'RCPT TO:<'.$to.'>', [250, 251]);
+    smtpSendMessage($socket, $smtp, $to, 'Brazilian Commodities', $teamSubject, mimeBody($teamHtml, $boundary, $attachmentParts), $headers);
     if (strcasecmp((string)$email, $to) !== 0) {
-        smtpCommand($socket, 'RCPT TO:<'.$email.'>', [250, 251]);
+        smtpSendMessage($socket, $smtp, (string)$email, $contactName, $senderSubject, mimeBody($senderHtml, $boundary, $attachmentParts), $headers);
     }
-    smtpCommand($socket, 'DATA', [354]);
-    $messageHeaders = array_merge([
-        'Date: '.date(DATE_RFC2822),
-        'To: Brazilian Commodities <'.$to.'>',
-        'Subject: '.$encodedSubject,
-        'Message-ID: <'.bin2hex(random_bytes(12)).'@braziliancommodities.com>',
-    ], $headers);
-    $message = implode("\r\n", $messageHeaders)."\r\n\r\n".$body;
-    $message = preg_replace('/(?m)^\./', '..', $message);
-    if (fwrite($socket, $message."\r\n.\r\n") === false) throw new RuntimeException('Falha no envio dos dados.');
-    smtpRead($socket, [250]);
     smtpCommand($socket, 'QUIT', [221]);
 } catch (Throwable $exception) {
     fclose($socket);
